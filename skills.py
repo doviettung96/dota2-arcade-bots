@@ -1,3 +1,4 @@
+import re
 import pyautogui
 from ocr import run_ocr
 
@@ -32,7 +33,11 @@ ACTIVE_SKILLS = {
     'attack': 'tooth',
     'meat': 'flesh',
     'aphotic': 'dark energy',
+    'nethertoxin': 'tooth',
+    'firestorm': 'abyssal',
     'shrapnel': 'reload',
+    'slave': 'flame',
+    'array': 'flame'
 }
 PASSIVE_SKILLS = [
     'dark',
@@ -43,6 +48,7 @@ PASSIVE_SKILLS = [
     'time',
     'flesh',
     'tooth',
+    'abyssal'
 ]
 
 
@@ -53,10 +59,12 @@ OTHERS = [
 SKIP = "skip"
 REFRESH = "refresh"
 
+
 def detect_skill(current_skills, region=None):
     img = pyautogui.screenshot(region=region)
     img.save("screen/skill_selection_screen.png")
     text_lines = run_ocr(img)
+
 
     matched_items =[]
     matched_active = []
@@ -65,7 +73,7 @@ def detect_skill(current_skills, region=None):
     matched_skip = []
     matched_refresh = []
     for text_line in text_lines:
-        splited_text = text_line['text'].lower().split(" (")
+        splited_text = re.sub(r'\(.*', '', text_line['text'].lower()).split(" ")
         for text in splited_text:
             if text in ITEMS:
                 text_line['text'] = text

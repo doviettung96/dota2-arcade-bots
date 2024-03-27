@@ -49,3 +49,16 @@ def find_and_click_text_line(text_lines, target, region, offset, sleep_time=1):
         pyautogui.click()
         time.sleep(sleep_time + np.random.uniform(0.1, 0.3))
         return matched_box, absolute_box
+
+def reset_cursor(region=None, rand_range=(5, 5)):
+    pyautogui.moveTo(region[0] + np.random.randint(0, rand_range[0]), region[1] + np.random.randint(0, rand_range[1]), duration=np.random.uniform(0.1, 0.3))
+    time.sleep(1 + np.random.uniform(0.1, 0.3))
+
+def move_circular(next_move: int, movements=['d', 's', 'a', 'w'], sleep_time=1):
+    pyautogui.keyDown(movements[next_move % len(movements)])
+    time.sleep(np.random.uniform(0.1, 0.3))
+    pyautogui.keyUp(movements[next_move % len(movements)])
+
+    time.sleep(sleep_time + np.random.uniform(0.1, 0.3))
+
+    return next_move + 1

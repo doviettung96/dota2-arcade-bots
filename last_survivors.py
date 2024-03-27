@@ -8,7 +8,7 @@ import gui
 import keyboard
 
 from ocr import run_ocr
-from gui import find_pattern_and_click, find_and_click_text_line
+from gui import find_pattern_and_click, find_and_click_text_line, reset_cursor, move_circular
 from skills import detect_skill
 
 
@@ -46,7 +46,7 @@ def select_hero(hero="drow", hero_region=None, start_region=None):
 
     return hero_box, start_box
 
-def select_portal_back(region=None, minimap_region=None, step=1):
+def select_portal_back(region=None, minimap_region=None, center=(0, 0), step=1):
     # TODO: locate the portal in the minimap instead
     img = pyautogui.screenshot(region=minimap_region)
     img.save("screen/minimap.png")
@@ -66,12 +66,11 @@ def select_portal_back(region=None, minimap_region=None, step=1):
         print(f"Found portal at minimap ({x + minimap_region[0]}, {y + minimap_region[1]})")
 
         gui.click(x + minimap_region[0], y + minimap_region[1])
-        # pyautogui.moveTo(x + minimap_region[0], y + minimap_region[1], duration=np.random.uniform(0.1, 0.3))
-        # pyautogui.click()
         time.sleep(1 + np.random.uniform(0.1, 0.3))
 
     # TODO: detect the portal given that view
-    portal_back_box = find_pattern_and_click("assets/portal_back.png", "screen/portal_back_screen.png", button='right', grayscale=False, confidence=0.7, region=region, sleep_time=3)
+    portal_back_box = find_pattern_and_click("assets/portal_back.png", "screen/portal_back_screen.png", button='right', grayscale=False, confidence=0.6, region=region, sleep_time=3)
+
     return portal_back_box
 
 def select_skill(current_skills, region=None):
@@ -109,6 +108,7 @@ if __name__ == "__main__":
     while not keyboard.is_pressed('q'):
         current_match_duration = match_duration
         current_skills = {}
+        next_move = 0
 
         print("New match starts")
         time.sleep(2 + np.random.uniform(0.1, 0.3))
@@ -139,21 +139,25 @@ if __name__ == "__main__":
         start_time = time.time()
 
         end_match_box = None
-        skill_selection_region = (3 * W // 4, H // 4, W // 4, 3 * H // 4)
+        skill_selection_region = (3 * W // 4, H // 5, W // 4, 4 * H // 5)
         while end_match_box is None:
             # TODO: we do the in game actions here
             # TODO: first will be check for skill
             current_skills, new_skill_box = select_skill(current_skills, region=skill_selection_region)
+            if new_skill_box is not None:
+                reset_cursor(region=skill_selection_region, rand_range=(skill_selection_region[2] // 10, skill_selection_region[3] // 10))
 
             # only check for the end after a fix amount of time
             current_time = time.time() 
             in_game_time = current_time - start_time
             if in_game_time > current_match_duration:
                 end_match_box = find_pattern_and_click("assets/confirm.png", "screen/end_match_screen.png", grayscale=True, confidence=0.7, region=(W // 3, H // 3, W // 3, 2 * H // 3), sleep_time=2)
+            else:
+                next_move = move_circular(next_move)
             
         portal_back_box = None
         while portal_back_box is None:
-            portal_back_box = select_portal_back(region=(W // 4, H // 4, W // 2, H // 2), minimap_region=(0, 3 * H // 4, W // 8, H // 4), step=2)
+            portal_back_box = select_portal_back(region=(W // 4, H // 4, W // 2, H // 2), minimap_region=(0, 3 * H // 4, W // 8, H // 4), center=(W // 2, H // 2), step=2)
 
         finished_matches += 1
         print(f"Finished {finished_matches}")
