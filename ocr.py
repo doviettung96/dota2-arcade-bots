@@ -1,7 +1,5 @@
 import pytesseract
 from pytesseract.pytesseract import Output
-import pyautogui
-import numpy as np
 
 # from gui_utils import click
 
@@ -75,16 +73,6 @@ def find_text_line(text_lines, target=''):
 
     return bboxes
 
-def find_and_click_text_line(text_lines, target, region, offset):
-    matched_boxes = find_text_line(text_lines, target=target)
-    print(f"Target {target} matched boxes {matched_boxes}")
-
-    if len(matched_boxes) >= 1:
-        matched_box = matched_boxes[0]
-        absolute_box = convert_to_absolute(matched_box, region)
-        pyautogui.moveTo(absolute_box[0] + absolute_box[2] // 2 + offset[0], absolute_box[1] + absolute_box[3] // 2 + offset[1], duration=np.random.uniform(0.1, 0.3))
-        pyautogui.click()
-        return matched_box, absolute_box
     
 def binarize_image(img, threshold):
     # Convert the image to grayscale
