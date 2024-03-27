@@ -144,11 +144,6 @@ if __name__ == "__main__":
             # TODO: we do the in game actions here
             # TODO: first will be check for skill
             current_skills, new_skill_box = select_skill(current_skills, region=skill_selection_region)
-            if new_skill_box is not None:
-                sleep_time = 5
-                time.sleep(sleep_time + np.random.uniform(0.1, 0.3))
-                current_match_duration += sleep_time
-                continue
 
             # only check for the end after a fix amount of time
             current_time = time.time() 
