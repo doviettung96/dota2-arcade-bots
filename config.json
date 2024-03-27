@@ -1,0 +1,17 @@
+ {
+    "screen_resolution": {
+        "H": 2160,
+        "W": 3840
+    },
+    "select_duration": 30,
+    "match_duration": 30,
+    "stage_config": {
+        "map": "Underworld",
+        "difficulty": "Master",
+        "level": "1",
+        "speed": "x2"
+    },
+    "hero_config": {
+        "name": "drow"
+    }
+}
